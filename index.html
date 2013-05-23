@@ -3,30 +3,46 @@
     <head>
         <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.0.6/angular.min.js"></script>
         <script src="http://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.4.4/underscore-min.js"></script>
+
+
+        <link href='http://fonts.googleapis.com/css?family=Lobster+Two' rel='stylesheet' type='text/css'>
+        <link href='http://fonts.googleapis.com/css?family=Noto+Serif' rel='stylesheet' type='text/css'>
+        <link href='index.css' rel='stylesheet' type='text/css'>
+
         <script src="index.js"></script>
     </head>
     <body>
-    <h2>Numbers Game</h2>
+    <div id="header"></div>
+    <div id="container">
 
-    <div ng-controller="calculatorController" data-ng-init="init()">
-        <div>GPA: {{ GPA }}</span>
-        <form ng-submit="addCourse()">
-            <input type="text" ng-model="courseName"  size="30" placeholder="course name">
-            <select ng-model="courseUnits" ng-options="n for n in [0.5, 1, 2, 3, 4, 5]"></select>
-            Major Course? <input type="checkbox" ng-model="majorBoolean">
-            <select ng-model="letterGrade" ng-options="letter for letter in letterGrades"></select>
-            <input class="button" type="submit" value="add">
-      </form>
 
-      <ul class="unstyled">
-        <li ng-repeat="course in courses">
-          <a href="" ng-click="removeCourse(course)">remove</a>
-          <a href="" ng-click="incrementCourse(course)">( + )</a>
-          <a href="" ng-click="decrementCourse(course)">( - )</a>
-          <a href="" ng-click="hideCourse(course)">hide</a>
-          <span class="course-{{course.name}}">{{course.name}},  {{course.letterGrade}}, {{course.units}} -- {{course.hide}}</span>
-        </li>
-      </ul>
+        <div ng-controller="calculatorController" data-ng-init="init()">
+            <div id="title">Overall: {{ GPA }}, Major: {{ majorGPA }}</div>
+            <div id="subtitle"><p>A simple GPA calculator built with Angular</p></div>
+
+            <form ng-submit="addCourse()">
+                <input type="text" ng-model="courseName"  size="30" placeholder="course name" required>
+                <select ng-model="courseUnits" ng-options="n for n in [0.5, 1, 2, 3, 4, 5]"></select>
+                Major Course? <input type="checkbox" ng-model="majorBoolean">
+                <select ng-model="letterGrade" ng-options="letter for letter in letterGrades"></select>
+                <input class="button" type="submit" value="add">
+          </form>
+          Filter:
+          <a href="" ng-click="courseFilter = {major: true}">Major Courses</a> |
+          <a href="" ng-click="courseFilter = {major: false}">Non-Major Courses</a> |
+          <a href="" ng-click="courseFilter = null">All Courses</a>
+
+          <ul id="courseList">
+            <li ng-repeat="course in courses | filter: courseFilter">
+                <div class="course">
+                    <a class="change" href="" ng:click="showCourse(course)">{{ course.show && 'Show' || 'Hide' }}</a>
+                    {{course.name}} -- {{course.letterGrade}} -- {{course.units}}
+                    <a class="change" href="" ng-click="decrementCourse(course)">( - )</a>
+                    <a class="change" href="" ng-click="incrementCourse(course)">( + )</a>
+                    <a id="remove" href="" ng-click="removeCourse(course)">DELETE</a></div>
+            </li>
+          </ul>
+        </div>
     </div>
   </body>
 </html>

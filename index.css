@@ -1,0 +1,37 @@
+body {
+  -webkit-background-size: cover;
+  -moz-background-size: cover;
+  -o-background-size: cover;
+  background-size: cover;
+}
+body #container {
+  position: absolute;
+  display: block;
+  top: 15%;
+  left: 50%;
+  width: 700px;
+  height: 100%;
+  margin-left: -350px;
+}
+body #container #info {
+  width: 700px;
+  height: 40px;
+  background-color: red;
+}
+body #container #title {
+  text-align: center;
+  font-family: 'Noto Serif', serif;
+  font-size: 50px;
+}
+body #container #subtitle {
+  text-align: center;
+  font-family: 'Noto Serif', serif;
+  font-size: 15px;
+}
+body #container ul li .course {
+  font-size: 13px;
+  font-family: 'Noto Serif', serif;
+  line-height: 13px;
+  height: 15px;
+  width: 100%;
+}

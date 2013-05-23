@@ -1,13 +1,22 @@
 function calculatorController($scope) {
+
+    var STORAGE_ID = 'numbers-game-storage';
+
+    $scope.getCourses = function() {
+      console.log('retrieving');
+      return JSON.parse(localStorage.getItem(STORAGE_ID) || '[]');
+    }
+
+    $scope.storeCourses = function(courses) {
+      localStorage.setItem(STORAGE_ID, JSON.stringify(courses));
+    }
+
     $scope.GPA = 0;
     $scope.majorGPA = 0;
-
+    $scope.courseUnits = 0.5; //default value
+    $scope.letterGrade = "A-";
     $scope.letterGrades = ["A+", "A", "A-", "B+", "B", "B-", "C+", "C", "C-", "D", "F", "P", "NP"];
-    $scope.courses = [
-        {name: "COMPSCI 170", letterGrade: "B-", units: 4, major: true, gradePoint: 2.7*4, hide: false},
-        {name: "COMPSCI 188", letterGrade: "A-", units: 4, major: true, gradePoint: 3.3*4, hide: false},
-        {name: "PLANTBI 13", letterGrade: "A", units: 3, major: false, gradePoint: 4.0*3, hide: false}
-    ];
+    $scope.courses = $scope.getCourses();
 
     $scope.init = function () {
         $scope.updateGPA();
@@ -30,29 +39,34 @@ function calculatorController($scope) {
             letterGrade: $scope.letterGrade,
             units: $scope.courseUnits,
             major: $scope.majorBoolean,
-            hide: false,
+            show: true,
             gradePoint: $scope.letterToGPA($scope.letterGrade) * $scope.courseUnits,
         });
-        $scope.gpa = $scope.updateGPA();
         $scope.courseName = '';
+        $scope.gpa = $scope.updateGPA();
+        $scope.storeCourses($scope.courses);
     }
 
     $scope.updateGPA = function() {
         var tempMajor = $scope.calculateGPA(true);
         var temp = $scope.calculateGPA(false);
 
-        if (tempMajor != null){
-            $scope.majorGPA = tempMajor;
+        console.log(tempMajor);
+        console.log(temp);
+        console.log();
+
+        if (!isNaN(tempMajor)){
+            $scope.majorGPA = Math.round(tempMajor*100)/100;
         } else { $scope.majorGPA = 0; };
 
-        if (temp != null){
-            $scope.GPA = temp;
+        if (!isNaN(temp)){
+            $scope.GPA = Math.round(temp*100)/100;
         } else { $scope.GPA = 0; };
     };
 
     $scope.calculateGPA = function(majorGPA) {
         console.log("hello!");
-        var relevantCourses = _.filter($scope.courses, function(course) { return course.letterGrade != "P" && course.letterGrade != "NP" && course.hide == false});
+        var relevantCourses = _.filter($scope.courses, function(course) { return course.letterGrade != "P" && course.letterGrade != "NP" && course.show != false});
         if(majorGPA){
             relevantCourses = _.filter(relevantCourses, function(course) { return course.major == true });
         }
@@ -64,6 +78,7 @@ function calculatorController($scope) {
   $scope.removeCourse = function(course) {
     $scope.courses.splice($scope.courses.indexOf(course), 1);
     $scope.updateGPA();
+    $scope.storeCourses($scope.courses)
   };
 
   $scope.incrementCourse = function(course) {
@@ -73,6 +88,7 @@ function calculatorController($scope) {
       course.letterGrade = $scope.letterGrades[--index];
       course.gradePoint = $scope.letterToGPA(course.letterGrade) * course.units;
       $scope.updateGPA();
+      $scope.storeCourses($scope.courses);
     };
   };
 
@@ -83,20 +99,14 @@ function calculatorController($scope) {
       course.letterGrade = $scope.letterGrades[++index];
       course.gradePoint = $scope.letterToGPA(course.letterGrade) * course.units;
       $scope.updateGPA();
+      $scope.storeCourses($scope.courses);
     };
   };
 
-  $scope.hideCourse = function(course) {
-    course.hide = !course.hide;
+  $scope.showCourse = function(course) {
+    course.show = !course.show;
     $scope.updateGPA();
+    $scope.storeCourses($scope.courses);
   };
-  //add course
-  //delete course
-  //discount course
-  //increase GPA
-  //decrease GPA
-  //show technical
-  //show nottechnical
-  //total Courses
-  //tabs for technical, nontechnical, all
+
 };
